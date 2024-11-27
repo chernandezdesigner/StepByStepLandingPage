@@ -36,10 +36,12 @@
             />
             <button
               type="submit"
-              class="w-full bg-sky-400 text-white px-6 py-3 rounded-md hover:bg-sky-500 transition duration-300"
+              :disabled="isSubmitting"
+              class="w-full bg-sky-400 text-white px-6 py-3 rounded-md hover:bg-sky-500 transition duration-300 disabled:opacity-50"
             >
-              Join Our Waitlist
+              {{ isSubmitting ? 'Joining...' : 'Join Our Waitlist' }}
             </button>
+            <p v-if="errorMessage" class="text-red-500 text-sm mt-2">{{ errorMessage }}</p>
           </form>
         </div>
       </div>
@@ -107,7 +109,7 @@
             <div class="w-16 h-16 bg-sky-400 text-white rounded-full flex items-center justify-center text-2xl font-bold mb-6">1</div>
             <h4 class="text-xl font-bold mb-4">Define Your Goals</h4>
             <p class="text-gray-700 flex-grow">
-              Use our intuitive questionnaire to outline your mortgage objectives quickly and efficiently.
+              Use our intuitive application to outline your mortgage objectives quickly and efficiently.
             </p>
             <FileTextIcon class="w-16 h-16 text-sky-400 mt-6 self-center" />
           </div>
@@ -170,10 +172,12 @@
             />
             <button
               type="submit"
-              class="w-full bg-white text-sky-600 px-6 py-3 rounded-md hover:bg-sky-100 transition duration-300 font-semibold"
+              :disabled="isSubmitting"
+              class="w-full bg-white text-sky-600 px-6 py-3 rounded-md hover:bg-sky-100 transition duration-300 font-semibold disabled:opacity-50"
             >
-              Join the Waitlist
+              {{ isSubmitting ? 'Joining...' : 'Join the Waitlist' }}
             </button>
+            <p v-if="errorMessage" class="text-red-500 text-sm mt-2">{{ errorMessage }}</p>
           </form>
           <p class="mt-4 text-sm text-sky-200">
             By joining, you agree to our <a href="#" class="underline hover:text-white">Terms of Service</a> and <a href="#" class="underline hover:text-white">Privacy Policy</a>.
@@ -224,12 +228,37 @@ import { ref } from 'vue'
 import { LockIcon, UsersIcon, ImageIcon, CheckCircleIcon, ShieldIcon, TrendingUpIcon, FileTextIcon, ListIcon, CheckSquareIcon, SparkleIcon, NetworkIcon, CompassIcon, ClipboardCheckIcon } from 'lucide-vue-next'
 
 const email = ref('')
+const isSubmitting = ref(false)
+const errorMessage = ref('')
 
-const submitWaitlist = () => {
-  // Here you would typically send the email to your backend
-  console.log('Submitted email:', email.value)
-  alert('Thank you for joining our waitlist!')
-  email.value = ''
+const submitWaitlist = async () => {
+  try {
+    isSubmitting.value = true
+    errorMessage.value = ''
+    
+    // Replace this URL with your Google Apps Script deployment URL
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxaYA3ZSiEU_22LIsvy7hwTNQaSM7b2kXctDE5oWPd3w31idJUTAcaMSpmmSsg7EWvazQ/exec'
+    
+    // Create URL-encoded form data instead of JSON
+    const formData = new FormData();
+    formData.append('email', email.value);
+    
+    const response = await fetch(GOOGLE_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      body: formData
+    });
+
+    // Since we're using no-cors, we won't get a response we can read
+    // So we'll just assume success if no error was thrown
+    alert('Thank you for joining our waitlist!')
+    email.value = ''
+  } catch (error) {
+    console.error('Error:', error)
+    errorMessage.value = 'Failed to join waitlist. Please try again.'
+  } finally {
+    isSubmitting.value = false
+  }
 }
 </script>
 
