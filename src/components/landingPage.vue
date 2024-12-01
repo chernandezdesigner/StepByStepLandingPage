@@ -237,7 +237,7 @@ const submitWaitlist = async () => {
     errorMessage.value = ''
     
     // Replace this URL with your Google Apps Script deployment URL
-    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxaYA3ZSiEU_22LIsvy7hwTNQaSM7b2kXctDE5oWPd3w31idJUTAcaMSpmmSsg7EWvazQ/exec'
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyHJgS30UdK-XVwGuBbExGoUJzZhWzD4TxCMpxmt5iWtJHTTZULiOmYwOkRYv4z9gJkww/exec'
     
     // Create URL-encoded form data instead of JSON
     const formData = new FormData();
